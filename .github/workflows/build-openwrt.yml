@@ -122,5 +122,19 @@ jobs:
           ${{ env.useVersionInfo }}
         artifacts: ${{ env.FIRMWARE }}/*
 
+    - name: Firefox Send action
+      uses: shooontan/firefox-send-action@v1.0.1
+      id: ffsend # output is
+      with:
+        # The file(s) to upload
+        file: ${{ env.FIRMWARE }}/*
+        # The file expiry time
+#        expiry_time: 5m # optional
+        # Protect the file with a password
+#        password: ${{ secrets.FFSEND_PASSWORD }} # optional
+
+    - name: Get the output url
+      run: echo ${{ steps.ffsend.outputs.url }} # show URL
+
     - name: WeChat notification
-      run: curl https://sc.ftqq.com/${{secrets.ServerChan}}.send?text=${{ env.FILE_NAME }}编译完成
+      run: curl https://sc.ftqq.com/${{secrets.ServerChan}}.send?text=${{ env.FILE_NAME }}编译完成&desp=FirefoxSend的下载地址${{ steps.ffsend.outputs.url }}
